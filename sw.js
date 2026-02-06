@@ -1,19 +1,20 @@
 // ============================================
-// IJ EDUCATION SYSTEM - Service Worker
+// CLASSTRACK - Service Worker
 // TRUE OFFLINE SUPPORT - Full App Works Offline!
 // ============================================
 
-const CACHE_NAME = 'ij-education-v5';
-const OFFLINE_FALLBACK = '/ClassTrack/offline.html';
+const CACHE_NAME = 'classtrack-v1';
+const OFFLINE_FALLBACK = '/Proposal/offline.html';
 
 // Core shell to pre-cache (these never change paths)
 const CORE_CACHE = [
-    '/ClassTrack/',
-    '/ClassTrack/index.html',
-    '/ClassTrack/offline.html',
-    '/ClassTrack/manifest.json',
-    '/ClassTrack/favicon.ico'
+    '/Proposal/',
+    '/Proposal/index.html',
+    '/Proposal/offline.html',
+    '/Proposal/manifest.json',
+    '/Proposal/favicon.ico'
 ];
+
 
 // ============================================
 // 1. INSTALL - Cache core + fetch app bundle
@@ -30,7 +31,7 @@ self.addEventListener('install', (event) => {
             // Now fetch and cache the main page to get JS/CSS references
             console.log('[SW] Fetching app bundle...');
             try {
-                const response = await fetch('/ClassTrack/index.html');
+                const response = await fetch('/Proposal/index.html');
                 const html = await response.text();
 
                 // Extract JS and CSS file paths from HTML
@@ -42,7 +43,7 @@ self.addEventListener('install', (event) => {
                 if (jsMatch) {
                     jsMatch.forEach(match => {
                         const path = match.match(/src="([^"]*)"/)[1];
-                        if (path.includes('/ClassTrack/') || path.startsWith('/')) {
+                        if (path.includes('/Proposal/') || path.startsWith('/')) {
                             assetsToCache.push(path);
                         }
                     });
@@ -51,7 +52,7 @@ self.addEventListener('install', (event) => {
                 if (cssMatch) {
                     cssMatch.forEach(match => {
                         const path = match.match(/href="([^"]*)"/)[1];
-                        if (path.includes('/ClassTrack/') && path.endsWith('.css')) {
+                        if (path.includes('/Proposal/') && path.endsWith('.css')) {
                             assetsToCache.push(path);
                         }
                     });
@@ -120,7 +121,7 @@ self.addEventListener('fetch', (event) => {
     // Skip external requests (Firebase, CDNs for fonts, etc)
     // These will use Firebase's built-in offline persistence
     if (!url.origin.includes(self.location.origin) &&
-        !url.pathname.includes('/ClassTrack/')) {
+        !url.pathname.includes('/Proposal/')) {
         return;
     }
 
@@ -147,10 +148,10 @@ self.addEventListener('fetch', (event) => {
                     if (cached) return cached;
 
                     // Try index.html
-                    const indexCached = await caches.match('/ClassTrack/index.html');
+                    const indexCached = await caches.match('/Proposal/index.html');
                     if (indexCached) return indexCached;
 
-                    const rootCached = await caches.match('/ClassTrack/');
+                    const rootCached = await caches.match('/Proposal/');
                     if (rootCached) return rootCached;
 
                     // Last resort: offline page
@@ -325,7 +326,7 @@ self.addEventListener('push', (event) => {
     console.log('[SW] Push received');
 
     let data = {
-        title: 'IJ Education System',
+        title: 'ClassTrack',
         body: 'New notification',
         icon: 'https://cdn-icons-png.flaticon.com/512/2997/2997322.png',
         badge: 'https://cdn-icons-png.flaticon.com/512/2997/2997322.png'
@@ -363,11 +364,11 @@ self.addEventListener('notificationclick', (event) => {
     event.waitUntil(
         self.clients.matchAll({ type: 'window' }).then((clients) => {
             for (const client of clients) {
-                if (client.url.includes('/ClassTrack/') && 'focus' in client) {
+                if (client.url.includes('/Proposal/') && 'focus' in client) {
                     return client.focus();
                 }
             }
-            return self.clients.openWindow('/ClassTrack/');
+            return self.clients.openWindow('/Proposal/');
         })
     );
 });
