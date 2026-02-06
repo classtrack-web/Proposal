@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Proposal</title>
+  <title>ClassTrack</title>
 
   <!-- Link the Manifest - Essential for PWA -->
   <link rel="manifest" href="./manifest.json">
@@ -20,8 +20,8 @@
   <!-- Math Equation CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 
-  <script type="module" crossorigin src="/Proposal/assets/index-a2h_ckEx.js"></script>
-  <link rel="stylesheet" crossorigin href="/Proposal/assets/index-Bx_LPoYQ.css">
+  <script type="module" crossorigin src="/Proposal/assets/index-BSPwlnsD.js"></script>
+  <link rel="stylesheet" crossorigin href="/Proposal/assets/index-DHPHvZi1.css">
 </head>
 
 <body>
@@ -39,16 +39,18 @@
           // ========================================
           // 1. Background Sync Registration
           // ========================================
-          if ('sync' in registration) {
-            try {
-              await registration.sync.register('sync-attendance');
-              await registration.sync.register('sync-data');
-              await registration.sync.register('sync-queue');
-              console.log('✅ Background Sync registered');
-            } catch (err) {
-              console.warn('⚠️ Background Sync not supported:', err);
+          navigator.serviceWorker.ready.then(async (readyReg) => {
+            if ('sync' in readyReg) {
+              try {
+                await readyReg.sync.register('sync-attendance');
+                await readyReg.sync.register('sync-data');
+                await readyReg.sync.register('sync-queue');
+                console.log('✅ Background Sync registered');
+              } catch (err) {
+                console.warn('⚠️ Background Sync failed:', err);
+              }
             }
-          }
+          });
 
           // ========================================
           // 2. Periodic Background Sync Registration
