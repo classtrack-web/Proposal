@@ -4,17 +4,16 @@
 // ============================================
 
 const CACHE_NAME = 'classtrack-v1';
-const OFFLINE_FALLBACK = '/Proposal/offline.html';
+const OFFLINE_FALLBACK = '/ClassTrack/offline.html';
 
 // Core shell to pre-cache (these never change paths)
 const CORE_CACHE = [
-    '/Proposal/',
-    '/Proposal/index.html',
-    '/Proposal/offline.html',
-    '/Proposal/manifest.json',
-    '/Proposal/favicon.ico'
+    '/ClassTrack/',
+    '/ClassTrack/index.html',
+    '/ClassTrack/offline.html',
+    '/ClassTrack/manifest.json',
+    '/ClassTrack/favicon.ico'
 ];
-
 
 // ============================================
 // 1. INSTALL - Cache core + fetch app bundle
@@ -31,7 +30,7 @@ self.addEventListener('install', (event) => {
             // Now fetch and cache the main page to get JS/CSS references
             console.log('[SW] Fetching app bundle...');
             try {
-                const response = await fetch('/Proposal/index.html');
+                const response = await fetch('/ClassTrack/index.html');
                 const html = await response.text();
 
                 // Extract JS and CSS file paths from HTML
@@ -43,7 +42,7 @@ self.addEventListener('install', (event) => {
                 if (jsMatch) {
                     jsMatch.forEach(match => {
                         const path = match.match(/src="([^"]*)"/)[1];
-                        if (path.includes('/Proposal/') || path.startsWith('/')) {
+                        if (path.includes('/ClassTrack/') || path.startsWith('/')) {
                             assetsToCache.push(path);
                         }
                     });
@@ -52,7 +51,7 @@ self.addEventListener('install', (event) => {
                 if (cssMatch) {
                     cssMatch.forEach(match => {
                         const path = match.match(/href="([^"]*)"/)[1];
-                        if (path.includes('/Proposal/') && path.endsWith('.css')) {
+                        if (path.includes('/ClassTrack/') && path.endsWith('.css')) {
                             assetsToCache.push(path);
                         }
                     });
@@ -121,7 +120,7 @@ self.addEventListener('fetch', (event) => {
     // Skip external requests (Firebase, CDNs for fonts, etc)
     // These will use Firebase's built-in offline persistence
     if (!url.origin.includes(self.location.origin) &&
-        !url.pathname.includes('/Proposal/')) {
+        !url.pathname.includes('/ClassTrack/')) {
         return;
     }
 
@@ -148,10 +147,10 @@ self.addEventListener('fetch', (event) => {
                     if (cached) return cached;
 
                     // Try index.html
-                    const indexCached = await caches.match('/Proposal/index.html');
+                    const indexCached = await caches.match('/ClassTrack/index.html');
                     if (indexCached) return indexCached;
 
-                    const rootCached = await caches.match('/Proposal/');
+                    const rootCached = await caches.match('/ClassTrack/');
                     if (rootCached) return rootCached;
 
                     // Last resort: offline page
@@ -346,7 +345,7 @@ self.addEventListener('push', (event) => {
             body: data.body,
             icon: data.icon,
             badge: data.badge,
-            tag: 'ij-notification',
+            tag: 'classtrack-notification',
             actions: [
                 { action: 'open', title: 'Open' },
                 { action: 'dismiss', title: 'Dismiss' }
@@ -364,11 +363,11 @@ self.addEventListener('notificationclick', (event) => {
     event.waitUntil(
         self.clients.matchAll({ type: 'window' }).then((clients) => {
             for (const client of clients) {
-                if (client.url.includes('/Proposal/') && 'focus' in client) {
+                if (client.url.includes('/ClassTrack/') && 'focus' in client) {
                     return client.focus();
                 }
             }
-            return self.clients.openWindow('/Proposal/');
+            return self.clients.openWindow('/ClassTrack/');
         })
     );
 });
